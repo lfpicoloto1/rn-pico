@@ -7,10 +7,16 @@ app = Flask(__name__)
 
 # Caminho para o arquivo notes.json temporário
 NOTES_FILE = "notes.json"
+API_KEY = "my_secure_api_key"
 
 @app.route("/update-release-notes", methods=["POST"])
 def update_release_notes():
+    
     try:
+        # Verifica a autenticação
+        auth_header = request.headers.get("Authorization")
+        if not auth_header or auth_header != f"Bearer {API_KEY}":
+            return jsonify({"error": "Unauthorized"}), 401
         # Recebe os dados da requisição
         data = request.get_json()
         if not data:
